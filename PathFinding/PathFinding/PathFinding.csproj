@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Classes\Grid.cs" />
     <Compile Include="Classes\GridBlock.cs" />
+    <Compile Include="Classes\GridPath.cs" />
     <Compile Include="Classes\Heap.cs" />
     <Compile Include="Classes\Node.cs" />
     <Compile Include="Classes\Pathfinding.cs" />
