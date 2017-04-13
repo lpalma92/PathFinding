@@ -1,3 +1,2 @@
 # PathFinding
-PathFinding. Visual Studio C#.  
-No terminado
+PathFinding. Visual Studio C#. 
