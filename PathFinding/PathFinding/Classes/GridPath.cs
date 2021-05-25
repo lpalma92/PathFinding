@@ -19,15 +19,14 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
-using System;
-using System.Collections.Generic;
+
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PathFinding.Classes
 {
+    /// <summary>
+    /// Class with de position for drawing a portion of a resolved path for a Grid 
+    /// </summary>
     class GridPath
     {
         public Pen pencil;
@@ -35,6 +34,11 @@ namespace PathFinding.Classes
         public Point end;
         public const int distance = 10;
 
+        /// <summary>
+        /// Create a GridPath with the points of the portion
+        /// </summary>
+        /// <param name="_start">A Point object for the begin of the path to draw</param>
+        /// <param name="_end">A Point object for the end of the path to draw</param>
         public GridPath(Point _start, Point _end)
         {
             start = new Point(_start.X + distance, _start.Y + distance);

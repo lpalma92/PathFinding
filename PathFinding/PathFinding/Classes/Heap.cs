@@ -5,8 +5,8 @@ namespace PathFinding.Classes
 {
     class Heap<T> where T : IHeapItem<T>
     {
-        T[] items;
-        int currentItemCount;
+        private T[] items;
+        private int currentItemCount;
 
         public Heap(int size)
         {
@@ -72,12 +72,9 @@ namespace PathFinding.Classes
             {
                 int childIndexLeft = item.HeapIndex * 2 + 1;
                 int childIndexRight = item.HeapIndex * 2 + 2;
-                int swapIndex = 0;
-
                 if (childIndexLeft < currentItemCount)
                 {
-                    swapIndex = childIndexLeft;
-
+                    int swapIndex = childIndexLeft;
                     if (childIndexRight < currentItemCount)
                     {
                         if (items[childIndexLeft].CompareTo(items[childIndexRight]) < 0)
@@ -105,7 +102,7 @@ namespace PathFinding.Classes
         void Swap(T itemA, T itemB)
         {
             items[itemA.HeapIndex] = itemB;
-            items[itemA.HeapIndex] = itemA;
+            items[itemB.HeapIndex] = itemA;
             int itemAIndex = itemA.HeapIndex;
             itemA.HeapIndex = itemB.HeapIndex;
             itemB.HeapIndex = itemAIndex;

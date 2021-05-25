@@ -19,61 +19,70 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
+
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PathFinding.Classes
 {
+    /// <summary>
+    /// Pathfinding class 
+    /// </summary>
     class Pathfinding
     {
         public bool isResolved = false;
 
         private Heap<Node> open;
-        private HashSet<Node> close;
+        private List<Node> close;
         private Grid grid;
         private List<Node> path;
 
+        /// <summary>
+        /// Create the Pathfinding class for a given grid
+        /// </summary>
+        /// <param name="_grid">Grid to resolve using the pathfinding method</param>
         public Pathfinding(Grid _grid)
         {
             grid = _grid;
         }
 
+        /// <summary>
+        /// Execute the resolve of the pathfinding on the grid using the A* algorithm
+        /// </summary>
         public void FindPath()
         {
             Node start = grid.StartNode;
             Node end = grid.EndNode;
             open = new Heap<Node>(grid.GridMaxSize);
-            close = new HashSet<Node>();
+            close = new List<Node>();
             open.Add(start);
 
             while (open.Count > 0)
             {
-                Node current = open.RemoveFirst();
-                close.Add(current);
-                if (current.GridBlock.Equals(end.GridBlock))
+                Node currentNode = open.RemoveFirst();
+                close.Add(currentNode);
+                if (currentNode.GridBlock.Equals(end.GridBlock))
                 {
                     isResolved = true;
                     break;
                 }
 
-                List<Node> neigbours = GetNeighbours(current);
+                List<Node> neigbours = GetNeighbours(currentNode);
                 foreach (Node p in neigbours)
                 {
                     if (p.GridBlock.Type == GridBlock.BlockType.Obstacle || close.Contains(p))
                         continue;
-                    int gCost = current.gCost + GetDistance(current, p);
-                    if(gCost < current.gCost || !open.Contains(p))
+                    int gCost = currentNode.gCost + GetDistance(currentNode, p);
+                    if(gCost < currentNode.gCost || !open.Contains(p))
                     {
                         p.gCost = gCost;
                         p.hCost = GetDistance(p, end);
-                        p.Parent = current;
+                        p.Parent = currentNode;
                         p.GridBlock.Type = p.GridBlock.Type != GridBlock.BlockType.End ? GridBlock.BlockType.OpenNode : GridBlock.BlockType.End;
                         if (!open.Contains(p))
                             open.Add(p);
+                        else
+                            open.UpdateItem(p);
                     }
                 }
             }
@@ -83,6 +92,10 @@ namespace PathFinding.Classes
             }
         }
 
+        /// <summary>
+        /// Trace the path from the end to the start node
+        /// </summary>
+        /// <returns>List of the node that conform the trace</returns>
         public List<Node> TracePath()
         {
             path = new List<Node>();
@@ -97,18 +110,32 @@ namespace PathFinding.Classes
             return path;
         }
 
+        /// <summary>
+        /// Paint the path of the solution
+        /// </summary>
         public void ShowResult()
         {
             grid.Resolve();
         }
 
-        private int GetDistance(Node a, Node b)
+        /// <summary>
+        /// Calculate the distance between two nodes based on Manhattan distance
+        /// </summary>
+        /// <param name="current">The current node for calculate distance</param>
+        /// <param name="goal">The goal node for calculate distance</param>
+        /// <returns></returns>
+        private int GetDistance(Node current, Node goal)
         {
-            int distX = Math.Abs(a.GridBlock.Position.X - b.GridBlock.Position.X) / 20;
-            int distY = Math.Abs(a.GridBlock.Position.Y - b.GridBlock.Position.Y) / 20;
-            return  (distX + distY);
+            int distX = Math.Abs(goal.GetXPos - current.GetXPos);
+            int distY = Math.Abs(goal.GetYPos - current.GetYPos);
+            return 18 * (distX + distY);
         }
 
+        /// <summary>
+        /// Get the list of neigbours nodes of a open node
+        /// </summary>
+        /// <param name="node">Node to evalute</param>
+        /// <returns>A list of Node</returns>
         private List<Node> GetNeighbours(Node node)
         {
             List<Node> neighbours = new List<Node>();
@@ -120,7 +147,7 @@ namespace PathFinding.Classes
                     neighbours.Add(aux);
                 }
             }
-            if (node.GetYPos < 14) // Right Node
+            if (node.GetYPos < grid.GridYArraySize) // Right Node
             {
                 if (grid.GetNodeFromPosition(node.GetXPos, node.GetYPos + 1) != node)
                 {
@@ -136,7 +163,7 @@ namespace PathFinding.Classes
                     neighbours.Add(aux);
                 }
             }
-            if (node.GetXPos < 14) // Bottom Node
+            if (node.GetXPos < grid.GridXArraySize) // Bottom Node
             {
                 if (grid.GetNodeFromPosition(node.GetXPos + 1, node.GetYPos) != node)
                 {

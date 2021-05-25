@@ -19,12 +19,16 @@
 //LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 
 namespace PathFinding.Classes
 {
+    /// <summary>
+    /// Grid class
+    /// </summary>
     class Grid
     {
         int gridSizeX, gridSizeY;
@@ -33,12 +37,23 @@ namespace PathFinding.Classes
         Node start, end;
         List<Node> path;
 
+        /// <summary>
+        /// Create a new Grid object with a X and Y size
+        /// </summary>
+        /// <param name="_gridSizeX">X max size of the grid</param>
+        /// <param name="_gridSizeY">Y max size of the grid</param>
         public Grid(int _gridSizeX, int _gridSizeY)
         {
             gridSizeX = _gridSizeX;
             gridSizeY = _gridSizeY;
         }
 
+        /// <summary>
+        /// Create a new Grid object with a X and Y size and with a Graphics control
+        /// </summary>
+        /// <param name="_gridSizeX">X max size of the grid</param>
+        /// <param name="_gridSizeY">Y max size of the grid</param>
+        /// <param name="_graphics">Graphics control for the drawing of the grid</param>
         public Grid(int _gridSizeX, int _gridSizeY, Graphics _graphics)
         {
             gridSizeX = _gridSizeX;
@@ -46,34 +61,68 @@ namespace PathFinding.Classes
             graphics = _graphics;
         }
 
+        /// <summary>
+        /// Get and Set the Start Node of the grid
+        /// </summary>
         public Node StartNode
         {
             get { return start; }
             set { start = value; }
         }
 
+        /// <summary>
+        /// Get and Set the End Node of the grid
+        /// </summary>
         public Node EndNode
         {
             get { return end; }
             set { end = value; }
         }
 
+        /// <summary>
+        /// Get the grid X array size
+        /// </summary>
+        public int GridXArraySize
+        {
+            get { return gridSizeX - 1; }
+        }
+
+        /// <summary>
+        /// Get the grid Y array size
+        /// </summary>
+        public int GridYArraySize
+        {
+            get { return gridSizeY - 1; }
+        }
+
+        /// <summary>
+        /// Get the size of the grid 
+        /// </summary>
         public int GridMaxSize
         {
             get { return gridSizeX * gridSizeY; }
         }
 
+        /// <summary>
+        /// Set the Graphics control for the drawing of the grid
+        /// </summary>
         public Graphics Graphic
         {
             set { graphics = value; }
         }
 
+        /// <summary>
+        /// Get the list of nodes that genereted the resolve path
+        /// </summary>
         public List<Node> Path
         {
             get { return path; }
             set { path = value; }
         }
 
+        /// <summary>
+        /// Create the grid structures of Node using de gridSizeX and gridSizeY propoerties given on the constructor
+        /// </summary>
         public void Create()
         {
             int posX = 0;
@@ -86,7 +135,7 @@ namespace PathFinding.Classes
                     GridBlock block = new GridBlock(new Point(posX, posY), GridBlock.BlockType.Way);
                     if (i == 0 && j == 0)
                         block.Type = GridBlock.BlockType.Start;
-                    else if (j == 14 && i == 14)
+                    else if (i == (gridSizeX - 1) && j == (gridSizeY - 1))
                         block.Type = GridBlock.BlockType.End;
                     gridNodes[i, j] = new Node(i, j, block);
                     posX += 20;
@@ -95,9 +144,12 @@ namespace PathFinding.Classes
                 posY += 20;
             }
             this.start = gridNodes[0, 0];
-            this.end = gridNodes[14, 14];
+            this.end = gridNodes[gridSizeX -1 , gridSizeY - 1];
         }
 
+        /// <summary>
+        /// Draw every Node of the grid with they given BlockType
+        /// </summary>
         public void Draw()
         {
             for (int i = 0; i < gridSizeX; i++)
@@ -124,12 +176,18 @@ namespace PathFinding.Classes
             }
         }
 
+        /// <summary>
+        /// Reset the grid to the default values
+        /// </summary>
         public void Reset()
         {
             gridNodes = null;
             Create();
         }
 
+        /// <summary>
+        /// Draws the path of the resolved grid 
+        /// </summary>
         public void Resolve()
         {
             if (Path != null)
@@ -155,6 +213,11 @@ namespace PathFinding.Classes
             }
         }
 
+        /// <summary>
+        /// Get a Node from a Point object
+        /// </summary>
+        /// <param name="_position">Point of the cursor</param>
+        /// <returns>A Node object in the given position</returns>
         public Node GetNodeFromMousePosition(Point _position)
         {
             for (int _x = 0; _x < gridSizeX; _x++)
@@ -170,11 +233,23 @@ namespace PathFinding.Classes
             return null;
         }
 
+        /// <summary>
+        /// Get a Node from a X and Y position
+        /// </summary>
+        /// <param name="_x">X position of the nod</param>
+        /// <param name="_y">Y position of the node</param>
+        /// <returns>A Node object in the given position</returns>
         public Node GetNodeFromPosition(int _x, int _y)
         {
             return gridNodes[_x, _y];
         }
 
+        /// <summary>
+        /// Change the GridBlock type of a Node in x and y position
+        /// </summary>
+        /// <param name="_x">X position of the node to change</param>
+        /// <param name="_y">Y position of the node to change</param>
+        /// <param name="_type">The new BlockType for the node in the given position</param>
         public void SetNodeTypeInPosition(int _x, int _y, GridBlock.BlockType _type)
         {
             gridNodes[_x, _y].GridBlock.Type = _type;
@@ -184,6 +259,11 @@ namespace PathFinding.Classes
                 EndNode = gridNodes[_x, _y];
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
         public bool isValidNodeMove(Node parent)
         {
             return true;

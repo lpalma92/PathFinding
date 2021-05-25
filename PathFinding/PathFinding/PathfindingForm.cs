@@ -40,20 +40,19 @@ namespace PathFinding
 
         private void PathfindingLoad(object sender, EventArgs e)
         {
-            _grid = new Grid(15, 15);
+            int y = new Random().Next(3, 15);
+            int x = new Random().Next(3, 15);
+            _grid = new Grid(x, y);
             _grid.Create();
         }
 
         private void ResolveClick(object sender, EventArgs e)
         {
-            lblMessage.Text = "Resolve";
+            lblMessage.Text = "Resolving";
             pathfinding = new Pathfinding(_grid);
             process = true;
             btnResolve.Enabled = false;
             backgroundWorker.RunWorkerAsync();
-            //pathfinding.FindPath();
-            //resolved = pathfinding.isResolved;
-            grid.Invalidate();
         }
 
         private void RestartClick(object sender, EventArgs e)
@@ -61,7 +60,7 @@ namespace PathFinding
             lblMessage.Text = "Restart";
             resolved = false;
             btnResolve.Enabled = true;
-            btnRestart.Enabled = false;
+            btnRestart.Enabled = false;            
             _grid.Reset();
             grid.Invalidate();
 
@@ -159,6 +158,7 @@ namespace PathFinding
 
         private void BackgroundWorkerRunWorkerCompleted(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e)
         {
+            lblMessage.Text = "Resolved";
             btnRestart.Enabled = true;
             process = false;
             resolved = pathfinding.isResolved;
